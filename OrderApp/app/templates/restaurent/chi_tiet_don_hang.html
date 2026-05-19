@@ -12,6 +12,15 @@
             <p><strong>Trạng thái:</strong>
                 <span class="badge bg-primary">{{ don_hang.trangThai.value }}</span>
             </p>
+            <p><strong>Phuong thuc thanh toan:</strong> {{ don_hang.paymentMethod or 'cod' }}</p>
+            <p><strong>Trang thai thanh toan:</strong>
+                <span class="badge {% if don_hang.paymentStatus == 'COMPLETED' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                    {{ don_hang.paymentStatus or 'PENDING' }}
+                </span>
+            </p>
+            {% if don_hang.paypalOrderId %}
+            <p><strong>PayPal Order ID:</strong> {{ don_hang.paypalOrderId }}</p>
+            {% endif %}
             <p><strong>Tổng giá:</strong> <span
                     class="text-danger fw-bold">{{ "{:,.0f}".format(don_hang.tongGia) }} đ</span></p>
         </div>

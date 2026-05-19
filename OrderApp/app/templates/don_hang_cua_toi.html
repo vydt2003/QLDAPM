@@ -1,0 +1,62 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Đơn hàng của tôi</h2>
+            <p class="text-muted mb-0">Theo dõi các đơn đã đặt.</p>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-primary">Tiếp tục mua</a>
+    </div>
+
+    {% if don_hangs %}
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Nhà hàng</th>
+                    <th>Thời gian</th>
+                    <th>Trạng thái</th>
+                    <th>Tổng tiền</th>
+                    <th>Thanh toan</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for don_hang in don_hangs %}
+                <tr>
+                    <td>#{{ don_hang.id }}</td>
+                    <td>{{ don_hang.nha_hang.name or don_hang.nha_hang.username }}</td>
+                    <td>{{ don_hang.thoiGian.strftime("%H:%M %d/%m/%Y") }}</td>
+                    <td><span class="badge bg-primary">{{ don_hang.trangThai.value }}</span></td>
+                    <td>
+                        <div><small>{{ don_hang.paymentMethod or 'cod' }}</small></div>
+                        <span class="badge {% if don_hang.paymentStatus == 'COMPLETED' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                            {{ don_hang.paymentStatus or 'PENDING' }}
+                        </span>
+                    </td>
+                    <td class="text-danger">{{ "{:,.0f}".format(don_hang.tongGia or 0) }} đ</td>
+                    <td>
+                        <a href="{{ url_for('chi_tiet_don_hang_khach_hang', id=don_hang.id) }}" class="btn btn-sm btn-outline-secondary">
+                            Xem chi tiết
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <h4 class="mb-2">Bạn chưa có đơn hàng nào</h4>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Chọn món ngay</a>
+        </div>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

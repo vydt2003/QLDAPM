@@ -26,15 +26,16 @@
             <p><strong>Mô tả:</strong> {{ mon_an.chiTietMon or 'Không có mô tả' }}</p>
 
             {% if current_user.is_authenticated and current_user.role.value == 'khachHang' %}
-            <form method="post" action="">
+            <form method="post" action="{{ url_for('them_vao_gio', id=mon_an.id) }}">
                 <div class="mb-3">
                     <label for="soLuong" class="form-label">Số lượng</label>
                     <input type="number" name="soLuong" id="soLuong" value="1" min="1" class="form-control" required>
                 </div>
-                <button class="btn btn-danger btn-sm w-50 ms-1">
+                <button type="submit" class="btn btn-danger btn-sm w-50 ms-1">
                     <i class="bi bi-cart-plus"></i> Thêm vào giỏ
                 </button>
             </form>
+
             {% endif %}
         </div>
     </div>
@@ -55,6 +56,39 @@
                     Xem chi tiết nhà hàng
                 </a>
             </div>
+        </div>
+    </div>
+
+    {% if mon_goi_y %}
+    <div class="mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">Goi y an kem</h4>
+            <small class="text-muted">Dua tren mon thuong di cung va thuc don cung nha hang</small>
+        </div>
+        <div class="row">
+            {% for goi_y in mon_goi_y %}
+            <div class="col-md-3 col-sm-6 col-12 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ goi_y.img or url_for('static', filename='images/default-food.png') }}" class="card-img-top food-img" alt="{{ goi_y.name }}">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ goi_y.name }}</h6>
+                        <p class="text-muted mb-2">{{ "{:,.0f}".format(goi_y.gia or 0) }} d</p>
+                        <a href="{{ url_for('chi_tiet_mon_an', id=goi_y.id) }}" class="btn btn-outline-primary btn-sm">Xem mon</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mt-5">
+        <h4>Phan tich danh gia</h4>
+        <div class="row g-3">
+            <div class="col-md-3 col-6"><div class="card shadow-sm"><div class="card-body"><small class="text-muted d-block">Diem trung binh</small><strong>{{ thong_ke_danh_gia.trung_binh_sao }}</strong></div></div></div>
+            <div class="col-md-3 col-6"><div class="card shadow-sm"><div class="card-body"><small class="text-muted d-block">Tich cuc</small><strong class="text-success">{{ thong_ke_danh_gia.tich_cuc }}</strong></div></div></div>
+            <div class="col-md-3 col-6"><div class="card shadow-sm"><div class="card-body"><small class="text-muted d-block">Trung tinh</small><strong class="text-secondary">{{ thong_ke_danh_gia.trung_tinh }}</strong></div></div></div>
+            <div class="col-md-3 col-6"><div class="card shadow-sm"><div class="card-body"><small class="text-muted d-block">Tieu cuc</small><strong class="text-danger">{{ thong_ke_danh_gia.tieu_cuc }}</strong></div></div></div>
         </div>
     </div>
 

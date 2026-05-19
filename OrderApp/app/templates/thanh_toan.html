@@ -1,0 +1,63 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Thanh toán đơn hàng</h2>
+            <p class="text-muted mb-0">{{ gio_hang.nha_hang.name or gio_hang.nha_hang.username }}</p>
+        </div>
+        <a href="{{ url_for('xem_gio_hang') }}" class="btn btn-outline-secondary">Quay lại giỏ hàng</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="mb-3">Món đã chọn</h4>
+                    {% for chi_tiet in chi_tiets %}
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-3">
+                        <div>
+                            <h6 class="mb-1">{{ chi_tiet.mon_an.name }}</h6>
+                            <small class="text-muted">Số lượng: {{ chi_tiet.soLuong }}</small>
+                        </div>
+                        <strong>{{ "{:,.0f}".format((chi_tiet.mon_an.gia or 0) * chi_tiet.soLuong) }} đ</strong>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="mb-3">Xác nhận thanh toán</h4>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="phuong_thuc_thanh_toan" class="form-label">Phương thức thanh toán</label>
+                            <select name="phuong_thuc_thanh_toan" id="phuong_thuc_thanh_toan" class="form-select">
+                                <option value="cod">Thanh toán khi nhận hàng</option>
+                                <option value="momo">Ví MoMo (mô phỏng)</option>
+                                <option value="banking">Chuyển khoản (mô phỏng)</option>
+                                <option value="paypal">PayPal (gia lap)</option>
+                            </select>
+                        {% if not paypal_sandbox_ready %}
+                        <div class="form-text text-warning mt-2">
+                            PayPal sandbox chua san sang. Can PAYPAL_CLIENT_ID va PAYPAL_CLIENT_SECRET.
+                        </div>
+                        {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Tổng thanh toán</span>
+                            <strong class="text-danger">{{ "{:,.0f}".format(tong_tien) }} đ</strong>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">Xác nhận đặt hàng</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -44,12 +44,12 @@
                 {% if current_user.role.value == 'khachHang' %}
                 <li class="nav-item mx-2 position-relative">
                     <a class="nav-link position-relative px-3 py-2 rounded bg-light shadow-sm d-flex align-items-center justify-content-center"
-                       href="/" title="Giỏ hàng"
+                       href="{{ url_for('xem_gio_hang') }}" title="Gio hang"
                        style="transition: all 0.3s ease;">
                         <i class="bi bi-bag-check-fill fs-5 text-primary"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white"
                               style="font-size: 0.7rem; min-width: 20px; height: 20px; line-height: 20px; padding: 0 6px;">
-            0
+            {{ so_mon_gio_hang }}
         </span>
                     </a>
                 </li>
@@ -97,6 +97,16 @@
                         <span>Chào {{ current_user.username }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
+                        {% if current_user.role.value == 'khachHang' %}
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('xem_gio_hang') }}">
+                                Giỏ hàng
+                            </a>
+                            <a class="dropdown-item" href="{{ url_for('don_hang_cua_toi') }}">
+                                Đơn hàng của tôi
+                            </a>
+                        </li>
+                        {% endif %}
                         {% if current_user.role.value == 'nhaHang' %}
                         <li>
                             <a class="dropdown-item"

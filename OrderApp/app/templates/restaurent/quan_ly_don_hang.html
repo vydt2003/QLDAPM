@@ -67,6 +67,15 @@
                 </td>
                 <td>
                     <a href="{{ url_for('chi_tiet_don_hang', id=dh.id) }}" class="btn btn-sm btn-primary">Xem</a>
+                    {% if dh.trangThai.name == 'cho' %}
+                    <form method="post" action="{{ url_for('xac_nhan_don_hang', id=dh.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-success">Xac nhan</button>
+                    </form>
+                    {% elif dh.trangThai.name == 'daXacNhan' %}
+                    <form method="post" action="{{ url_for('hoan_tat_don_hang', id=dh.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-info text-white">Hoan tat</button>
+                    </form>
+                    {% endif %}
                     <a href="{{ url_for('xuat_bill', id=dh.id) }}" class="btn btn-sm btn-outline-secondary" target="_blank">
                         Hóa đơn <i class="bi bi-file-earmark-pdf"></i>
                     </a>

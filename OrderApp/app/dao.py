@@ -52,12 +52,27 @@ def add_nha_hang(name, username, password, email, adress, MST, gio_mo_cua, gio_d
 
     db.session.add(nh)
     db.session.commit()
-def load_foods(keyword=None):
+def load_foods(keyword=None, category_id=None, nha_hang_id=None, min_gia=None, max_gia=None, con_mon=False):
     query = MonAn.query
 
     if keyword:
         keyword = f"%{keyword.strip()}%"
         query = query.filter(MonAn.name.ilike(keyword))
+
+    if category_id:
+        query = query.filter(MonAn.idDanhMuc == category_id)
+
+    if nha_hang_id:
+        query = query.filter(MonAn.idNhaHang == nha_hang_id)
+
+    if min_gia is not None:
+        query = query.filter(MonAn.gia >= min_gia)
+
+    if max_gia is not None:
+        query = query.filter(MonAn.gia <= max_gia)
+
+    if con_mon:
+        query = query.filter(MonAn.tinhTrang == True)
 
     return query.all()
 

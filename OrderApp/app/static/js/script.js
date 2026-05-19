@@ -43,7 +43,7 @@ async function capNhatTinhTrang(monId, tinhTrangMoi) {
 const socket = io();
 
 
-if (currentUser.isAuthenticated === true && currentUser.role === 'nhaHang') {
+if (currentUser.isAuthenticated === true) {
     socket.emit('join', { room: 'user_' + currentUser.id });
 }
 

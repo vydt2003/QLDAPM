@@ -111,6 +111,9 @@ class DonHang(db.Model):
     trangThai = db.Column(db.Enum(EnumStatus), default=EnumStatus.cho)
     thoiGian = db.Column(db.DateTime, default=datetime.utcnow)
     tongGia = db.Column(db.Float)
+    paymentMethod = db.Column(db.String(50), default='cod')
+    paymentStatus = db.Column(db.String(50), default='PENDING')
+    paypalOrderId = db.Column(db.String(100), nullable=True)
 
     chi_tiet_don_hang = db.relationship('ChiTietDonHang', backref='don_hang', lazy=True)
 

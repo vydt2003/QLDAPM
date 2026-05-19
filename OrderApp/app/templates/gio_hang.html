@@ -1,0 +1,110 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Giỏ hàng của bạn</h2>
+            <p class="text-muted mb-0">{{ tong_mon }} món đã được thêm vào giỏ.</p>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left"></i> Tiếp tục chọn món
+        </a>
+    </div>
+
+    {% if gio_hang_data %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            {% for group in gio_hang_data %}
+            <section class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h4 class="mb-1">{{ group.nha_hang.name or group.nha_hang.username }}</h4>
+                        <small class="text-muted">Đã thêm {{ group['cart_items']|length }} món từ nhà hàng này</small>
+                    </div>
+                    <a href="{{ url_for('chi_tiet_nha_hang', nha_hang_id=group.nha_hang.id) }}" class="btn btn-sm btn-outline-secondary">
+                        Xem nhà hàng
+                    </a>
+                </div>
+
+                {% for item in group['cart_items'] %}
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <div class="row align-items-center g-3">
+                            <div class="col-md-2 col-4">
+                                <img src="{{ item.mon_an.img or url_for('static', filename='images/default-food.png') }}"
+                                     alt="{{ item.mon_an.name }}"
+                                     class="img-fluid rounded">
+                            </div>
+                            <div class="col-md-5 col-8">
+                                <h5 class="mb-1">{{ item.mon_an.name }}</h5>
+                                <p class="text-muted mb-1">{{ item.mon_an.danh_muc.tenDanhMuc if item.mon_an.danh_muc else 'Chưa phân loại' }}</p>
+                                <a href="{{ url_for('chi_tiet_mon_an', id=item.mon_an.id) }}" class="small text-decoration-none">
+                                    Xem chi tiết món
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-4">
+                                <span class="text-muted d-block">Đơn giá</span>
+                                <strong>{{ "{:,.0f}".format(item.mon_an.gia or 0) }} đ</strong>
+                            </div>
+                            <div class="col-md-2 col-4">
+                                <span class="text-muted d-block">SL</span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <form method="post" action="{{ url_for('giam_so_luong_gio_hang', chi_tiet_id=item.chi_tiet.id) }}">
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm px-2">-</button>
+                                    </form>
+                                    <strong>{{ item.chi_tiet.soLuong }}</strong>
+                                    <form method="post" action="{{ url_for('tang_so_luong_gio_hang', chi_tiet_id=item.chi_tiet.id) }}">
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm px-2">+</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-md-1 col-4 text-md-end">
+                                <span class="text-muted d-block">Thành tiền</span>
+                                <strong class="text-danger">{{ "{:,.0f}".format(item.thanh_tien) }} đ</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="text-end">
+                    <strong>Tạm tính nhà hàng:</strong>
+                    <span class="text-danger">{{ "{:,.0f}".format(group.tong_theo_nha_hang) }} đ</span>
+                </div>
+                <div class="text-end mt-3">
+                    <a href="{{ url_for('thanh_toan_gio_hang', gio_hang_id=group.gio_hang.id) }}" class="btn btn-success">
+                        Dat hang va thanh toan
+                    </a>
+                </div>
+            </section>
+            {% endfor %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="mb-3">Tổng quan</h4>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tổng số lượng</span>
+                        <strong>{{ tong_mon }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Tổng tiền</span>
+                        <strong class="text-danger">{{ "{:,.0f}".format(tong_tien) }} đ</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <h4 class="mb-2">Giỏ hàng đang trống</h4>
+            <p class="text-muted mb-4">Hãy chọn món từ trang chủ hoặc trang nhà hàng để bắt đầu.</p>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Xem danh sách món ăn</a>
+        </div>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}
