@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, session, abort, jsonify, flash, current_app
+﻿from flask import render_template, request, redirect, url_for, session, abort, jsonify, flash, current_app
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.utils import secure_filename
 
@@ -35,7 +35,7 @@ def xuat_bill(id):
     pisa_status = pisa.CreatePDF(src=html, dest=pdf_buffer)
 
     if pisa_status.err:
-        return f"Lỗi khi tạo PDF: {pisa_status.err}", 500
+        return f"Lá»—i khi táº¡o PDF: {pisa_status.err}", 500
 
     pdf_buffer.seek(0)
     response = make_response(pdf_buffer.read())
@@ -198,12 +198,12 @@ def goi_y_mon_an_cho_khach(user):
     if gio < 10:
         query = query.filter(
             (DanhMucMonAn.id == MonAn.idDanhMuc) &
-            (DanhMucMonAn.tenDanhMuc.in_(["Thức uống", "Khai vị"]))
+            (DanhMucMonAn.tenDanhMuc.in_(["Thá»©c uá»‘ng", "Khai vá»‹"]))
         )
     elif gio >= 20:
         query = query.filter(
             (DanhMucMonAn.id == MonAn.idDanhMuc) &
-            (DanhMucMonAn.tenDanhMuc.in_(["Món chính", "Lẩu", "Tráng miệng"]))
+            (DanhMucMonAn.tenDanhMuc.in_(["MÃ³n chÃ­nh", "Láº©u", "TrÃ¡ng miá»‡ng"]))
         )
 
     if dem_danh_muc:
@@ -289,7 +289,7 @@ def index():
 @app.route('/nha-hang', methods=['GET'])
 def danh_sach_nha_hang():
     kw = request.args.get('kw', '')
-    nha_hangs = dao.load_nha_hang(keyword=kw)  # hàm đã có sẵn
+    nha_hangs = dao.load_nha_hang(keyword=kw)  # hÃ m Ä‘Ã£ cÃ³ sáºµn
     return render_template('nha_hang_list.html', nha_hangs=nha_hangs, kw=kw)
 
 @app.route('/danh-muc/<int:category_id>')
@@ -327,7 +327,7 @@ def register_process():
         if password == confirm:
             email = request.form.get('email')
             if not email:
-                err_msg = 'Email là bắt buộc!'
+                err_msg = 'Email lÃ  báº¯t buá»™c!'
             else:
                 data = request.form.copy()
                 del data['confirm']
@@ -336,7 +336,7 @@ def register_process():
                 dao.add_user(avt=avt, **data)
                 return redirect('/login')
         else:
-            err_msg = 'Mật khẩu KHÔNG khớp!'
+            err_msg = 'Máº­t kháº©u KHÃ”NG khá»›p!'
 
     return render_template('register.html', err_msg=err_msg)
 
@@ -358,11 +358,11 @@ def api_cap_nhat_mon(mon_an_id):
 
     mon = db.session.get(MonAn, mon_an_id)
     if not mon:
-        return jsonify({'status': 'error', 'message': 'Món không tồn tại'}), 404
+        return jsonify({'status': 'error', 'message': 'MÃ³n khÃ´ng tá»“n táº¡i'}), 404
 
 
     if mon.nha_hang.id != current_user.id:
-        return jsonify({'status': 'error', 'message': 'Không có quyền'}), 403
+        return jsonify({'status': 'error', 'message': 'KhÃ´ng cÃ³ quyá»n'}), 403
 
 
     mon.tinhTrang = tinh_trang_moi
@@ -386,7 +386,7 @@ def edit_food(food_id):
 
         img_file = request.files.get('img')
         if img_file and img_file.filename != '':
-            # Upload lên Cloudinary
+            # Upload lÃªn Cloudinary
             res = cloudinary.uploader.upload(img_file)
             mon.img = res['secure_url']
 
@@ -399,11 +399,11 @@ def edit_food(food_id):
 @login_required
 def quan_ly_don_hang():
     if current_user.role != EnumRole.nhaHang:
-        return "Bạn không có quyền truy cập", 403
+        return "Báº¡n khÃ´ng cÃ³ quyá»n truy cáº­p", 403
 
 
     trang_thai = request.args.get("trang_thai")  # VD: 'daXacNhan'
-    sap_xep = request.args.get("sap_xep", "desc")  # asc hoặc desc
+    sap_xep = request.args.get("sap_xep", "desc")  # asc hoáº·c desc
 
     query = DonHang.query.filter_by(idNhaHang=current_user.id)
 
@@ -432,11 +432,11 @@ def quan_ly_don_hang():
 @login_required
 def chi_tiet_don_hang(id):
     if current_user.role != EnumRole.nhaHang:
-        return "Bạn không có quyền truy cập", 403
+        return "Báº¡n khÃ´ng cÃ³ quyá»n truy cáº­p", 403
 
     don_hang = DonHang.query.get_or_404(id)
     if don_hang.idNhaHang != current_user.id:
-        return "Không có quyền xem đơn hàng này", 403
+        return "KhÃ´ng cÃ³ quyá»n xem Ä‘Æ¡n hÃ ng nÃ y", 403
 
     chi_tiet = ChiTietDonHang.query.filter_by(idDH=id).all()
 
@@ -444,29 +444,29 @@ def chi_tiet_don_hang(id):
         new_status = request.form.get('trangThai')
         note = request.form.get('noiDungHuy', '').strip()
 
-        # Kiểm tra nếu hủy mà không nhập lý do
+        # Kiá»ƒm tra náº¿u há»§y mÃ  khÃ´ng nháº­p lÃ½ do
         if new_status == 'daHuy' and not note:
-            flash("Phải nhập lý do khi hủy đơn hàng!", "danger")
+            flash("Pháº£i nháº­p lÃ½ do khi há»§y Ä‘Æ¡n hÃ ng!", "danger")
         else:
             try:
                 cap_nhat_trang_thai_don(don_hang, EnumStatus[new_status], note)
 
-                # Gửi email
-                subject = f"Đơn hàng #{don_hang.id} - Trạng thái mới: {don_hang.trangThai.value}"
+                # Gá»­i email
+                subject = f"ÄÆ¡n hÃ ng #{don_hang.id} - Tráº¡ng thÃ¡i má»›i: {don_hang.trangThai.value}"
                 content = f"""
-                    <p>Xin chào {don_hang.khach_hang.name},</p>
-                    <p>Đơn hàng của bạn đã được cập nhật trạng thái: <strong>{don_hang.trangThai.value}</strong></p>
+                    <p>Xin chÃ o {don_hang.khach_hang.name},</p>
+                    <p>ÄÆ¡n hÃ ng cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c cáº­p nháº­t tráº¡ng thÃ¡i: <strong>{don_hang.trangThai.value}</strong></p>
                 """
 
                 if new_status == 'daHuy' and note:
-                    content += f"<p><strong>Lý do hủy:</strong> {note}</p>"
+                    content += f"<p><strong>LÃ½ do há»§y:</strong> {note}</p>"
 
                 send_gmail(don_hang.khach_hang.email, subject, content)
-                flash("Cập nhật và gửi email thành công!", "success")
+                flash("Cáº­p nháº­t vÃ  gá»­i email thÃ nh cÃ´ng!", "success")
 
             except Exception as e:
-                print("Lỗi cập nhật trạng thái:", e)
-                flash("Có lỗi xảy ra khi cập nhật đơn hàng!", "danger")
+                print("Lá»—i cáº­p nháº­t tráº¡ng thÃ¡i:", e)
+                flash("CÃ³ lá»—i xáº£y ra khi cáº­p nháº­t Ä‘Æ¡n hÃ ng!", "danger")
 
             return redirect(url_for('chi_tiet_don_hang', id=id))
 
@@ -487,9 +487,9 @@ def register_nhahang():
                 dao.add_nha_hang(avt=avt, **data)
                 return redirect('/login')
             except Exception as e:
-                err_msg = f"Lỗi: {str(e)}"
+                err_msg = f"Lá»—i: {str(e)}"
         else:
-            err_msg = "Mật khẩu không khớp!"
+            err_msg = "Máº­t kháº©u khÃ´ng khá»›p!"
 
     return render_template('register_nhahang.html', err_msg=err_msg)
 
@@ -503,14 +503,14 @@ def chi_tiet_mon_an(id):
 
     if request.method == 'POST':
         if not current_user.is_authenticated or current_user.role != EnumRole.khachHang:
-            flash("Bạn cần đăng nhập bằng tài khoản khách hàng để đánh giá.", "warning")
+            flash("Báº¡n cáº§n Ä‘Äƒng nháº­p báº±ng tÃ i khoáº£n khÃ¡ch hÃ ng Ä‘á»ƒ Ä‘Ã¡nh giÃ¡.", "warning")
             return redirect(url_for('login_process'))
 
         sao_raw = request.form.get('sao')
         content = request.form.get('content', '').strip()
 
         if not sao_raw:
-            flash("Vui lÃ²ng chá»n sá»‘ sao Ä‘á»ƒ gá»­i Ä‘Ã¡nh giÃ¡.", "warning")
+            flash("Vui lÃƒÂ²ng chÃ¡Â»Ân sÃ¡Â»â€˜ sao Ã„â€˜Ã¡Â»Æ’ gÃ¡Â»Â­i Ã„â€˜ÃƒÂ¡nh giÃƒÂ¡.", "warning")
             return redirect(url_for('chi_tiet_mon_an', id=mon_an.id))
 
         sao = int(sao_raw)
@@ -525,7 +525,7 @@ def chi_tiet_mon_an(id):
         db.session.commit()
 
         nha_hang_id = mon_an.idNhaHang
-        noi_dung_tb = f"{current_user.name} đã đánh giá món: {mon_an.name} ⭐ {sao}/5"
+        noi_dung_tb = f"{current_user.name} Ä‘Ã£ Ä‘Ã¡nh giÃ¡ mÃ³n: {mon_an.name} â­ {sao}/5"
         url = url_for('chi_tiet_mon_an', id=mon_an.id)
 
         thong_bao = ThongBao(
@@ -545,7 +545,7 @@ def chi_tiet_mon_an(id):
             room=f"user_{nha_hang_id}"
         )
 
-        flash("Đánh giá đã được gửi!", "success")
+        flash("ÄÃ¡nh giÃ¡ Ä‘Ã£ Ä‘Æ°á»£c gá»­i!", "success")
         return redirect(url_for('chi_tiet_mon_an', id=mon_an.id))
 
     mon_goi_y = goi_y_mon_di_kem(mon_an)
@@ -930,7 +930,7 @@ import calendar
 @login_required
 def thong_ke_doanh_thu():
     if current_user.role != EnumRole.nhaHang:
-        return "Không có quyền truy cập", 403
+        return "KhÃ´ng cÃ³ quyá»n truy cáº­p", 403
 
 
     thang = request.args.get('thang', type=int) or datetime.now().month
@@ -964,12 +964,12 @@ def thong_ke_doanh_thu():
 @login_required
 def cap_nhat_nha_hang():
     if current_user.role != EnumRole.nhaHang:
-        return "Không có quyền truy cập", 403
+        return "KhÃ´ng cÃ³ quyá»n truy cáº­p", 403
 
     nha_hang = NhaHang.query.get(current_user.id)
 
     if request.method == "POST":
-        # Cập nhật thông tin cơ bản
+        # Cáº­p nháº­t thÃ´ng tin cÆ¡ báº£n
         nha_hang.name = request.form["name"]
         nha_hang.email = request.form["email"]
         nha_hang.phone = request.form["phone"]
@@ -978,7 +978,7 @@ def cap_nhat_nha_hang():
         nha_hang.gio_mo_cua = request.form["gio_mo_cua"]
         nha_hang.gio_dong_cua = request.form["gio_dong_cua"]
 
-        # Cập nhật ảnh đại diện nếu có
+        # Cáº­p nháº­t áº£nh Ä‘áº¡i diá»‡n náº¿u cÃ³
         file = request.files.get('avt')
         if file and file.filename != '':
             filename = secure_filename(file.filename)
@@ -989,7 +989,7 @@ def cap_nhat_nha_hang():
             nha_hang.avt = url_for('static', filename=f'uploads/{filename}')
 
         db.session.commit()
-        flash("Cập nhật thông tin thành công!", "success")
+        flash("Cáº­p nháº­t thÃ´ng tin thÃ nh cÃ´ng!", "success")
         return redirect(url_for("chi_tiet_nha_hang", nha_hang_id=nha_hang.id))
 
     return render_template("restaurent/nha_hang_cap_nhat.html", nha_hang=nha_hang)
@@ -1017,7 +1017,7 @@ def doi_trang_thai_hoat_dong(nha_hang_id):
     nha_hang = NhaHang.query.get_or_404(nha_hang_id)
 
     if current_user.id != nha_hang.id:
-        return {"error": "Không có quyền thực hiện"}, 403
+        return {"error": "KhÃ´ng cÃ³ quyá»n thá»±c hiá»‡n"}, 403
 
     nha_hang.dang_hoat_dong = not nha_hang.dang_hoat_dong
     db.session.commit()
@@ -1043,7 +1043,7 @@ def danh_dau_thong_bao(id):
 def get_user_by_id(user_id):
     return dao.get_user_by_id(user_id)
 
-# Chặn quyền truy cập vào admin
+# Cháº·n quyá»n truy cáº­p vÃ o admin
 @app.before_request
 def before_request():
     if '/admin' in request.path and not current_user.is_authenticated:
@@ -1053,8 +1053,9 @@ def before_request():
 @login_required
 def quan_tri():
     if current_user.role != EnumRole.admin:
-        return "Bạn không có quyền truy cập", 403
-    return redirect('/admin')
+        return "Báº¡n khÃ´ng cÃ³ quyá»n truy cáº­p", 403
+    return redirect('/admin/')
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
+
